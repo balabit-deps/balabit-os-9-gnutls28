@@ -1,0 +1,384 @@
+From 9259100633b77a0dc03f83047d7cf778466bf9f3 Mon Sep 17 00:00:00 2001
+From: "H.J. Lu" <hjl.tools@gmail.com>
+Date: Fri, 28 Feb 2020 14:02:21 -0800
+Subject: [PATCH] Update x86-64 assembly codes with CET support
+
+---
+ lib/accelerated/x86/elf/aes-ssse3-x86_64.s    | 21 +++++++++++++++
+ lib/accelerated/x86/elf/aesni-gcm-x86_64.s    | 16 +++++++++++
+ lib/accelerated/x86/elf/aesni-x86_64.s        | 27 +++++++++++++++++++
+ lib/accelerated/x86/elf/e_padlock-x86_64.s    | 16 +++++++++++
+ lib/accelerated/x86/elf/ghash-x86_64.s        | 22 +++++++++++++++
+ lib/accelerated/x86/elf/sha1-ssse3-x86_64.s   | 16 +++++++++++
+ lib/accelerated/x86/elf/sha256-ssse3-x86_64.s | 16 +++++++++++
+ lib/accelerated/x86/elf/sha512-ssse3-x86_64.s | 16 +++++++++++
+ 8 files changed, 150 insertions(+)
+
+Index: gnutls28-3.7.0-5ubuntu1/lib/accelerated/x86/elf/aes-ssse3-x86_64.s
+===================================================================
+--- gnutls28-3.7.0-5ubuntu1.orig/lib/accelerated/x86/elf/aes-ssse3-x86_64.s
++++ gnutls28-3.7.0-5ubuntu1/lib/accelerated/x86/elf/aes-ssse3-x86_64.s
+@@ -635,6 +635,7 @@ _vpaes_schedule_mangle:
+ .align	16
+ vpaes_set_encrypt_key:
+ .cfi_startproc	
++.byte	243,15,30,250
+ 	movl	%esi,%eax
+ 	shrl	$5,%eax
+ 	addl	$5,%eax
+@@ -653,6 +654,7 @@ vpaes_set_encrypt_key:
+ .align	16
+ vpaes_set_decrypt_key:
+ .cfi_startproc	
++.byte	243,15,30,250
+ 	movl	%esi,%eax
+ 	shrl	$5,%eax
+ 	addl	$5,%eax
+@@ -676,6 +678,7 @@ vpaes_set_decrypt_key:
+ .align	16
+ vpaes_encrypt:
+ .cfi_startproc	
++.byte	243,15,30,250
+ 	movdqu	(%rdi),%xmm0
+ 	call	_vpaes_preheat
+ 	call	_vpaes_encrypt_core
+@@ -689,6 +692,7 @@ vpaes_encrypt:
+ .align	16
+ vpaes_decrypt:
+ .cfi_startproc	
++.byte	243,15,30,250
+ 	movdqu	(%rdi),%xmm0
+ 	call	_vpaes_preheat
+ 	call	_vpaes_decrypt_core
+@@ -701,6 +705,7 @@ vpaes_decrypt:
+ .align	16
+ vpaes_cbc_encrypt:
+ .cfi_startproc	
++.byte	243,15,30,250
+ 	xchgq	%rcx,%rdx
+ 	subq	$16,%rcx
+ 	jc	.Lcbc_abort
+@@ -865,3 +870,19 @@ _vpaes_consts:
+ .size	_vpaes_consts,.-_vpaes_consts
+ 
+ .section .note.GNU-stack,"",%progbits
++	.section ".note.gnu.property", "a"
++	.p2align 3
++	.long 1f - 0f
++	.long 4f - 1f
++	.long 5
++0:
++	.asciz "GNU"
++1:
++	.p2align 3
++	.long 0xc0000002
++	.long 3f - 2f
++2:
++	.long 3
++3:
++	.p2align 3
++4:
+Index: gnutls28-3.7.0-5ubuntu1/lib/accelerated/x86/elf/aesni-gcm-x86_64.s
+===================================================================
+--- gnutls28-3.7.0-5ubuntu1.orig/lib/accelerated/x86/elf/aesni-gcm-x86_64.s
++++ gnutls28-3.7.0-5ubuntu1/lib/accelerated/x86/elf/aesni-gcm-x86_64.s
+@@ -828,3 +828,19 @@ aesni_gcm_encrypt:
+ .align	64
+ 
+ .section .note.GNU-stack,"",%progbits
++	.section ".note.gnu.property", "a"
++	.p2align 3
++	.long 1f - 0f
++	.long 4f - 1f
++	.long 5
++0:
++	.asciz "GNU"
++1:
++	.p2align 3
++	.long 0xc0000002
++	.long 3f - 2f
++2:
++	.long 3
++3:
++	.p2align 3
++4:
+Index: gnutls28-3.7.0-5ubuntu1/lib/accelerated/x86/elf/aesni-x86_64.s
+===================================================================
+--- gnutls28-3.7.0-5ubuntu1.orig/lib/accelerated/x86/elf/aesni-x86_64.s
++++ gnutls28-3.7.0-5ubuntu1/lib/accelerated/x86/elf/aesni-x86_64.s
+@@ -44,6 +44,7 @@
+ .align	16
+ aesni_encrypt:
+ .cfi_startproc	
++.byte	243,15,30,250
+ 	movups	(%rdi),%xmm2
+ 	movl	240(%rdx),%eax
+ 	movups	(%rdx),%xmm0
+@@ -70,6 +71,7 @@ aesni_encrypt:
+ .align	16
+ aesni_decrypt:
+ .cfi_startproc	
++.byte	243,15,30,250
+ 	movups	(%rdi),%xmm2
+ 	movl	240(%rdx),%eax
+ 	movups	(%rdx),%xmm0
+@@ -557,6 +559,7 @@ _aesni_decrypt8:
+ .align	16
+ aesni_ecb_encrypt:
+ .cfi_startproc	
++.byte	243,15,30,250
+ 	andq	$-16,%rdx
+ 	jz	.Lecb_ret
+ 
+@@ -901,6 +904,7 @@ aesni_ecb_encrypt:
+ .align	16
+ aesni_ccm64_encrypt_blocks:
+ .cfi_startproc	
++.byte	243,15,30,250
+ 	movl	240(%rcx),%eax
+ 	movdqu	(%r8),%xmm6
+ 	movdqa	.Lincrement64(%rip),%xmm9
+@@ -966,6 +970,7 @@ aesni_ccm64_encrypt_blocks:
+ .align	16
+ aesni_ccm64_decrypt_blocks:
+ .cfi_startproc	
++.byte	243,15,30,250
+ 	movl	240(%rcx),%eax
+ 	movups	(%r8),%xmm6
+ 	movdqu	(%r9),%xmm3
+@@ -1065,6 +1070,7 @@ aesni_ccm64_decrypt_blocks:
+ .align	16
+ aesni_ctr32_encrypt_blocks:
+ .cfi_startproc	
++.byte	243,15,30,250
+ 	cmpq	$1,%rdx
+ 	jne	.Lctr32_bulk
+ 
+@@ -1643,6 +1649,7 @@ aesni_ctr32_encrypt_blocks:
+ .align	16
+ aesni_xts_encrypt:
+ .cfi_startproc	
++.byte	243,15,30,250
+ 	leaq	(%rsp),%r11
+ .cfi_def_cfa_register	%r11
+ 	pushq	%rbp
+@@ -2113,6 +2120,7 @@ aesni_xts_encrypt:
+ .align	16
+ aesni_xts_decrypt:
+ .cfi_startproc	
++.byte	243,15,30,250
+ 	leaq	(%rsp),%r11
+ .cfi_def_cfa_register	%r11
+ 	pushq	%rbp
+@@ -2620,6 +2628,7 @@ aesni_xts_decrypt:
+ .align	32
+ aesni_ocb_encrypt:
+ .cfi_startproc	
++.byte	243,15,30,250
+ 	leaq	(%rsp),%rax
+ 	pushq	%rbx
+ .cfi_adjust_cfa_offset	8
+@@ -3047,6 +3056,7 @@ __ocb_encrypt1:
+ .align	32
+ aesni_ocb_decrypt:
+ .cfi_startproc	
++.byte	243,15,30,250
+ 	leaq	(%rsp),%rax
+ 	pushq	%rbx
+ .cfi_adjust_cfa_offset	8
+@@ -3484,6 +3494,7 @@ __ocb_decrypt1:
+ .align	16
+ aesni_cbc_encrypt:
+ .cfi_startproc	
++.byte	243,15,30,250
+ 	testq	%rdx,%rdx
+ 	jz	.Lcbc_ret
+ 
+@@ -4513,3 +4524,19 @@ __aesni_set_encrypt_key:
+ .align	64
+ 
+ .section .note.GNU-stack,"",%progbits
++	.section ".note.gnu.property", "a"
++	.p2align 3
++	.long 1f - 0f
++	.long 4f - 1f
++	.long 5
++0:
++	.asciz "GNU"
++1:
++	.p2align 3
++	.long 0xc0000002
++	.long 3f - 2f
++2:
++	.long 3
++3:
++	.p2align 3
++4:
+Index: gnutls28-3.7.0-5ubuntu1/lib/accelerated/x86/elf/e_padlock-x86_64.s
+===================================================================
+--- gnutls28-3.7.0-5ubuntu1.orig/lib/accelerated/x86/elf/e_padlock-x86_64.s
++++ gnutls28-3.7.0-5ubuntu1/lib/accelerated/x86/elf/e_padlock-x86_64.s
+@@ -1068,3 +1068,19 @@ padlock_ctr32_encrypt:
+ .section .note.GNU-stack,"",%progbits
+ 
+ 
++	.section ".note.gnu.property", "a"
++	.p2align 3
++	.long 1f - 0f
++	.long 4f - 1f
++	.long 5
++0:
++	.asciz "GNU"
++1:
++	.p2align 3
++	.long 0xc0000002
++	.long 3f - 2f
++2:
++	.long 3
++3:
++	.p2align 3
++4:
+Index: gnutls28-3.7.0-5ubuntu1/lib/accelerated/x86/elf/ghash-x86_64.s
+===================================================================
+--- gnutls28-3.7.0-5ubuntu1.orig/lib/accelerated/x86/elf/ghash-x86_64.s
++++ gnutls28-3.7.0-5ubuntu1/lib/accelerated/x86/elf/ghash-x86_64.s
+@@ -45,6 +45,7 @@
+ .align	16
+ gcm_gmult_4bit:
+ .cfi_startproc	
++.byte	243,15,30,250
+ 	pushq	%rbx
+ .cfi_adjust_cfa_offset	8
+ .cfi_offset	%rbx,-16
+@@ -156,6 +157,7 @@ gcm_gmult_4bit:
+ .align	16
+ gcm_ghash_4bit:
+ .cfi_startproc	
++.byte	243,15,30,250
+ 	pushq	%rbx
+ .cfi_adjust_cfa_offset	8
+ .cfi_offset	%rbx,-16
+@@ -903,6 +905,7 @@ gcm_init_clmul:
+ .align	16
+ gcm_gmult_clmul:
+ .cfi_startproc	
++.byte	243,15,30,250
+ .L_gmult_clmul:
+ 	movdqu	(%rdi),%xmm0
+ 	movdqa	.Lbswap_mask(%rip),%xmm5
+@@ -956,6 +959,7 @@ gcm_gmult_clmul:
+ .align	32
+ gcm_ghash_clmul:
+ .cfi_startproc	
++.byte	243,15,30,250
+ .L_ghash_clmul:
+ 	movdqa	.Lbswap_mask(%rip),%xmm10
+ 
+@@ -1450,6 +1454,7 @@ gcm_init_avx:
+ .align	32
+ gcm_gmult_avx:
+ .cfi_startproc	
++.byte	243,15,30,250
+ 	jmp	.L_gmult_clmul
+ .cfi_endproc	
+ .size	gcm_gmult_avx,.-gcm_gmult_avx
+@@ -1458,6 +1463,7 @@ gcm_gmult_avx:
+ .align	32
+ gcm_ghash_avx:
+ .cfi_startproc	
++.byte	243,15,30,250
+ 	vzeroupper
+ 
+ 	vmovdqu	(%rdi),%xmm10
+@@ -1886,3 +1892,19 @@ gcm_ghash_avx:
+ .align	64
+ 
+ .section .note.GNU-stack,"",%progbits
++	.section ".note.gnu.property", "a"
++	.p2align 3
++	.long 1f - 0f
++	.long 4f - 1f
++	.long 5
++0:
++	.asciz "GNU"
++1:
++	.p2align 3
++	.long 0xc0000002
++	.long 3f - 2f
++2:
++	.long 3
++3:
++	.p2align 3
++4:
+Index: gnutls28-3.7.0-5ubuntu1/lib/accelerated/x86/elf/sha1-ssse3-x86_64.s
+===================================================================
+--- gnutls28-3.7.0-5ubuntu1.orig/lib/accelerated/x86/elf/sha1-ssse3-x86_64.s
++++ gnutls28-3.7.0-5ubuntu1/lib/accelerated/x86/elf/sha1-ssse3-x86_64.s
+@@ -5489,3 +5489,19 @@ K_XX_XX:
+ .align	64
+ 
+ .section .note.GNU-stack,"",%progbits
++	.section ".note.gnu.property", "a"
++	.p2align 3
++	.long 1f - 0f
++	.long 4f - 1f
++	.long 5
++0:
++	.asciz "GNU"
++1:
++	.p2align 3
++	.long 0xc0000002
++	.long 3f - 2f
++2:
++	.long 3
++3:
++	.p2align 3
++4:
+Index: gnutls28-3.7.0-5ubuntu1/lib/accelerated/x86/elf/sha256-ssse3-x86_64.s
+===================================================================
+--- gnutls28-3.7.0-5ubuntu1.orig/lib/accelerated/x86/elf/sha256-ssse3-x86_64.s
++++ gnutls28-3.7.0-5ubuntu1/lib/accelerated/x86/elf/sha256-ssse3-x86_64.s
+@@ -5495,3 +5495,19 @@ sha256_block_data_order_avx2:
+ .size	sha256_block_data_order_avx2,.-sha256_block_data_order_avx2
+ 
+ .section .note.GNU-stack,"",%progbits
++	.section ".note.gnu.property", "a"
++	.p2align 3
++	.long 1f - 0f
++	.long 4f - 1f
++	.long 5
++0:
++	.asciz "GNU"
++1:
++	.p2align 3
++	.long 0xc0000002
++	.long 3f - 2f
++2:
++	.long 3
++3:
++	.p2align 3
++4:
+Index: gnutls28-3.7.0-5ubuntu1/lib/accelerated/x86/elf/sha512-ssse3-x86_64.s
+===================================================================
+--- gnutls28-3.7.0-5ubuntu1.orig/lib/accelerated/x86/elf/sha512-ssse3-x86_64.s
++++ gnutls28-3.7.0-5ubuntu1/lib/accelerated/x86/elf/sha512-ssse3-x86_64.s
+@@ -5500,3 +5500,19 @@ sha512_block_data_order_avx2:
+ .size	sha512_block_data_order_avx2,.-sha512_block_data_order_avx2
+ 
+ .section .note.GNU-stack,"",%progbits
++	.section ".note.gnu.property", "a"
++	.p2align 3
++	.long 1f - 0f
++	.long 4f - 1f
++	.long 5
++0:
++	.asciz "GNU"
++1:
++	.p2align 3
++	.long 0xc0000002
++	.long 3f - 2f
++2:
++	.long 3
++3:
++	.p2align 3
++4:

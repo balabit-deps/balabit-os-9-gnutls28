@@ -1,0 +1,6 @@
+9259100633b77a0dc03f83047d7cf778466bf9f3.patch
+14_version_gettextcat.diff
+30_guile-snarf.diff
+40_bashism_in_test.diff
+41_more_bashism_in_test.diff
+CVE-2022-2509.patch
