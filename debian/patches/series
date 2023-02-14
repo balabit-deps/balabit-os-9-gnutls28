@@ -4,3 +4,5 @@
 40_bashism_in_test.diff
 41_more_bashism_in_test.diff
 CVE-2022-2509.patch
+CVE-2023-0361-1.patch
+CVE-2023-0361-2.patch

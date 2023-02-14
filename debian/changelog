@@ -1,3 +1,14 @@
+gnutls28 (3.7.3-4ubuntu1.2) jammy-security; urgency=medium
+
+  * SECURITY UPDATE: timing sidechannel in RSA decryption
+    - debian/patches/CVE-2023-0361-1.patch: side-step potential
+      side-channel in lib/auth/rsa.c.
+    - debian/patches/CVE-2023-0361-2.patch: remove dead code in
+      lib/auth/rsa.c.
+    - CVE-2023-0361
+
+ -- Marc Deslauriers <marc.deslauriers@ubuntu.com>  Tue, 14 Feb 2023 16:13:17 -0500
+
 gnutls28 (3.7.3-4ubuntu1.1) jammy-security; urgency=medium
 
   * SECURITY UPDATE: Double free in verification of pkcs7 signatures
