@@ -1,3 +1,13 @@
+gnutls28 (3.7.3-4ubuntu1.3) jammy-security; urgency=medium
+
+  * SECURITY UPDATE: timing side-channel inside RSA-PSK key exchange
+    - debian/patches/CVE-2023-5981.patch: side-step potential side-channel
+      in lib/auth/rsa.c, lib/auth/rsa_psk.c, lib/gnutls_int.h,
+      lib/priority.c.
+    - CVE-2023-5981
+
+ -- Marc Deslauriers <marc.deslauriers@ubuntu.com>  Fri, 17 Nov 2023 09:19:42 -0500
+
 gnutls28 (3.7.3-4ubuntu1.2) jammy-security; urgency=medium
 
   * SECURITY UPDATE: timing sidechannel in RSA decryption
