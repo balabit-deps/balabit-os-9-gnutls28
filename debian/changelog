@@ -1,3 +1,20 @@
+gnutls28 (3.7.3-4ubuntu1.5) jammy-security; urgency=medium
+
+  * SECURITY UPDATE: side-channel leak via Minerva attack
+    - debian/patches/CVE-2024-28834.patch: avoid normalization of mpz_t in
+      deterministic ECDSA in lib/nettle/int/dsa-compute-k.c,
+      lib/nettle/int/dsa-compute-k.h, lib/nettle/int/ecdsa-compute-k.c,
+      lib/nettle/int/ecdsa-compute-k.h, lib/nettle/pk.c,
+      tests/sign-verify-deterministic.c.
+    - CVE-2024-28834
+  * SECURITY UPDATE: crash via specially-crafted cert bundle
+    - debian/patches/CVE-2024-28835.patch: remove length limit of input in
+      lib/gnutls_int.h, lib/x509/common.c, lib/x509/verify-high.c,
+      tests/test-chains.h.
+    - CVE-2024-28835
+
+ -- Marc Deslauriers <marc.deslauriers@ubuntu.com>  Fri, 12 Apr 2024 09:51:00 -0400
+
 gnutls28 (3.7.3-4ubuntu1.4) jammy-security; urgency=medium
 
   * SECURITY UPDATE: timing side-channel attack in the RSA-PSK key exchange
