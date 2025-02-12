@@ -1,3 +1,14 @@
+gnutls28 (3.7.3-4ubuntu1.6) jammy-security; urgency=medium
+
+  * SECURITY UPDATE: resource consumption issue when decoding DER-encoded
+    certificate data
+    - debian/patches/CVE-2024-12243.patch: optimize name constraints
+      processing in lib/datum.c,  lib/x509/name_constraints.c,
+      lib/x509/x509_ext.c, lib/x509/x509_ext_int.h, lib/x509/x509_int.h.
+    - CVE-2024-12243
+
+ -- Marc Deslauriers <marc.deslauriers@ubuntu.com>  Wed, 12 Feb 2025 10:33:01 -0500
+
 gnutls28 (3.7.3-4ubuntu1.5) jammy-security; urgency=medium
 
   * SECURITY UPDATE: side-channel leak via Minerva attack
