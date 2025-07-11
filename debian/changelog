@@ -1,3 +1,27 @@
+gnutls28 (3.7.3-4ubuntu1.7) jammy-security; urgency=medium
+
+  * SECURITY UPDATE: double-free via otherName in the SAN
+    - debian/patches/CVE-2025-32988.patch: avoid double free when exporting
+      othernames in SAN in lib/x509/extensions.c.
+    - CVE-2025-32988
+  * SECURITY UPDATE: OOB read via malformed length field in SCT extension
+    - debian/patches/CVE-2025-32989.patch: fix read buffer overrun in SCT
+      timestamps in lib/x509/x509_ext.c.
+    - CVE-2025-32989
+  * SECURITY UPDATE: heap write overflow in certtool via invalid template
+    - debian/patches/CVE-2025-32990.patch: avoid 1-byte write buffer
+      overrun when parsing template in src/certtool-cfg.c,
+      tests/cert-tests/Makefile.am, tests/cert-tests/template-test.sh,
+      tests/cert-tests/templates/template-too-many-othernames.tmpl.
+    - CVE-2025-32990
+  * SECURITY UPDATE: NULL deref via missing PSK in TLS 1.3 handshake
+    - debian/patches/CVE-2025-6395.patch: clear HSK_PSK_SELECTED when
+      resetting binders in lib/handshake.c, lib/state.c, tests/Makefile.am,
+      tests/tls13/hello_retry_request_psk.c.
+    - CVE-2025-6395
+
+ -- Marc Deslauriers <marc.deslauriers@ubuntu.com>  Fri, 11 Jul 2025 09:13:17 -0400
+
 gnutls28 (3.7.3-4ubuntu1.6) jammy-security; urgency=medium
 
   * SECURITY UPDATE: resource consumption issue when decoding DER-encoded
